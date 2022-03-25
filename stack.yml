@@ -6,5 +6,7 @@ functions:
   goinventory-api:
     lang: golang-middleware
     handler: ./goinventory-api
-    image: yonglexu/goinventory-api:latest
-
+    image: ghcr.io/quasaer/goinventory-api:latest
+configuration:
+  templates:
+    - name: golang-middleware
