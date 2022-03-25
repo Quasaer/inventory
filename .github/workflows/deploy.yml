@@ -36,7 +36,11 @@ jobs:
           tr '[:upper:]' '[:lower:]')
       - name: Login to Container Registry
         run: > 
-          echo ${{ secrets.FAASD_PAT }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+        uses: docker/login-action@v1
+        with:
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ghcr.io
       - name: Login faasd
         run: >
           echo ${{secrets.OPENFAAS_PASSWORD}} | 
