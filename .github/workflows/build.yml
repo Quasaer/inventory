@@ -33,7 +33,7 @@ jobs:
         ports:
           - 5432:5432
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v3
         with:
           ref: ${{ github.ref }}
       - name: Get faas-cli
