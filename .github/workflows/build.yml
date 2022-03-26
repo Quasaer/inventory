@@ -65,7 +65,7 @@ jobs:
           --password-stdin
       - name: Run Migrations
         run: > 
-          migrate -source file://migrations -database postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable up
+          migrate -source file://goinventory-api/migrations -database postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable up
       - name: Publish functions
         run: >
           OWNER="${{ steps.get_repo_owner.outputs.repo_owner }}" 
