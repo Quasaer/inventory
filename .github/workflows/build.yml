@@ -43,7 +43,8 @@ jobs:
       - name: Get Go-migrate cli
         run: >
           curl -s https://packagecloud.io/install/repositories/golang-migrate/migrate/script.deb.sh | sudo bash
-          sudo apt-get install -y migrate
+      - name: Install Go-migrate cli
+        run: sudo apt-get install -y migrate
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
