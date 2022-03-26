@@ -19,7 +19,7 @@ type InventoryList struct {
 	UpdatedAt   int       `db:"updated_at"`
 }
 
-type InventoryStore interface {
+type InventoryListStore interface {
 	GetInventoryListByID(id uuid.UUID) (InventoryList, error)
 	GetAllInventoryListsByUserID(id uuid.UUID) ([]InventoryList, error)
 	CreateInventoryList(i *InventoryList) error
@@ -33,4 +33,9 @@ type InventoryItemStore interface {
 	CreateInventoryItem(i *InventoryItem) error
 	UpdateInventoryItem(i *InventoryItem) error
 	DeleteInventoryItem(InventoryItemId uuid.UUID) error
+}
+
+type Store interface {
+	InventoryItemStore
+	InventoryItemStore
 }
