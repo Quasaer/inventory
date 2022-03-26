@@ -3,7 +3,7 @@ name: build
 on:
   push:
     branches:
-    - '*'
+    - 'feature/*'
 
 permissions:
   actions: read
