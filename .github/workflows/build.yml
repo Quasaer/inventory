@@ -14,6 +14,21 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Service containers to run with `container-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@master
         with:
@@ -40,6 +55,10 @@ jobs:
           docker login ghcr.io --username 
           ${{ steps.get_repo_owner.outputs.repo_owner }} 
           --password-stdin
+      - name: Run Migrations
+        run: > 
+          docker run -v {{ migration dir }}:/migrations --network host migrate/migrate
+          -path=/migrations/ -database postgres://localhost:5432/database up
       - name: Publish functions
         run: >
           OWNER="${{ steps.get_repo_owner.outputs.repo_owner }}" 
