@@ -35,7 +35,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
         with:
-          fetch-depth: 1
+          ref: ${{ github.ref }}
       - name: Get faas-cli
         run: curl -sLSf https://cli.openfaas.com | sudo sh
       - name: Pull custom templates from stack.yml
