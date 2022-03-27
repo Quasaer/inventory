@@ -5,7 +5,7 @@ provider:
 functions:
   goinventory-api:
     lang: golang-middleware
-    handler: ./goinventory-api
+    handler: ./goinventory-api/function
     image: ghcr.io/quasaer/goinventory-api:latest
 configuration:
   templates:
