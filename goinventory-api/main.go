@@ -11,7 +11,7 @@ import (
 
 func main() {
 
-	connectionString, err := ioutil.ReadFile("/var/openfaas/secrets/dev-inventory-postgres-connection-string")
+	connectionString, err := ioutil.ReadFile("/var/openfaas/secrets/inventory-postgres-connection-string")
 	if err != nil {
 		log.Fatal(err)
 	}
