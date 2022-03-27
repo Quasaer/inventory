@@ -4,9 +4,9 @@ provider:
   gateway: http://127.0.0.1:8080
 functions:
   goinventory-api:
-    lang: golang-middleware
-    handler: ./goinventory-api/function
-    image: ghcr.io/quasaer/goinventory-api:latest
+    lang: dockerfile
+    handler: ./goinventory-api
+    image: yonglexu/goinventory-api:latest
 configuration:
   templates:
-    - name: golang-middleware
+    - name: dockerfile

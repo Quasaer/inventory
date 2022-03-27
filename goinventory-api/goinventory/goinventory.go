@@ -15,8 +15,8 @@ type InventoryList struct {
 	ID          uuid.UUID `db:"id"`
 	Name        string    `db:"name"`
 	Description string    `db:"description"`
-	CreatedAt   int       `db:"created_at"`
-	UpdatedAt   int       `db:"updated_at"`
+	CreatedAt   *string   `db:"created_at"`
+	UpdatedAt   *string   `db:"updated_at"`
 }
 
 type InventoryListStore interface {
@@ -36,6 +36,6 @@ type InventoryItemStore interface {
 }
 
 type Store interface {
-	InventoryItemStore
+	InventoryListStore
 	InventoryItemStore
 }
