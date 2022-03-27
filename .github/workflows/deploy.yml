@@ -47,7 +47,7 @@ jobs:
           registry: ghcr.io
       - name: Run Migrations
         run: > 
-          migrate -source file://goinventory-api/migrations -database postgres://${{secrets.PROD_POSTGRES_USER}}:${{secrets.PROD_POSTGRES_PASSWORD}}@${{secrets.PROD_POSTGRES_HOST}}:5432/${{secrets.PROD_POSTGRES_DB}}?sslmode=true up
+          migrate -source file://goinventory-api/migrations -database postgres://${{secrets.PROD_POSTGRES_USER}}:${{secrets.PROD_POSTGRES_PASSWORD}}@${{secrets.PROD_POSTGRES_HOST}}:5432/${{secrets.PROD_POSTGRES_DB}}?sslmode=require up
       - name: Login faasd
         run: >
           echo ${{secrets.OPENFAAS_PASSWORD}} | 
