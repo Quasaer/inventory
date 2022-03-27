@@ -6,7 +6,7 @@ functions:
   goinventory-api:
     lang: dockerfile
     handler: ./goinventory-api
-    image: yonglexu/goinventory-api:latest
+    image: ghcr.io/quasaer/goinventory-api:latest
     secrets:
     - inventory-postgres-connection-string
 configuration:
