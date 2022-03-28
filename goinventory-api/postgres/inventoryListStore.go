@@ -1,10 +1,13 @@
 package postgres
 
 import (
+	"errors"
 	"fmt"
+	"time"
 
 	"github.com/Quasaer/goinventory-api/goinventory"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 )
@@ -26,6 +29,8 @@ func (s *InventoryListStore) GetAllInventoryListsByUserID(id uuid.UUID) ([]goinv
 }
 
 func (s *InventoryListStore) CreateInventoryList(i *goinventory.InventoryList) error {
+	i.ID = uuid.New()
+	i.CreatedAt = time.Now().Unix()
 	if err := s.Get(i, `INSERT INTO inventory_list VALUES ($1,$2,$3,$4) RETURNING *`,
 		i.ID,
 		i.Name,
@@ -52,4 +57,15 @@ func (s *InventoryListStore) DeleteInventoryList(InventoryListId uuid.UUID) erro
 		return fmt.Errorf("ERROR DELETING INVENTORY LIST: %w", err)
 	}
 	return nil
+}
+
+func (s *InventoryListStore) ValidateInventoryList(i *goinventory.InventoryList) error {
+	//Check Manual struct first. Should not be able to post an ID.
+	if i.ID != uuid.Nil {
+		return errors.New("invalid fields in post request")
+	}
+
+	validate := validator.New()
+
+	return validate.Struct(i)
 }
