@@ -18,7 +18,8 @@ func NewHandler(store goinventory.Store) *Handler {
 
 	h.Use(middleware.Logger)
 	h.Route("/inventoryList", func(r chi.Router) {
-		r.Get("/{id}", h.InventoryList())
+		r.Get("/{id}", h.GetInventoryList())
+		r.Post("/", h.CreateInventoryList())
 	})
 
 	return h
@@ -29,7 +30,7 @@ type Handler struct {
 	store goinventory.Store
 }
 
-func (h *Handler) InventoryList() http.HandlerFunc {
+func (h *Handler) GetInventoryList() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		idStr := chi.URLParam(r, "id")
@@ -48,8 +49,33 @@ func (h *Handler) InventoryList() http.HandlerFunc {
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusCreated)
+		w.WriteHeader(http.StatusFound)
 		json.NewEncoder(w).Encode(i)
+
+	}
+}
+
+func (h *Handler) CreateInventoryList() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		inventoryList := &goinventory.InventoryList{}
+		if err := json.NewDecoder(r.Body).Decode(&inventoryList); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		if err := h.store.ValidateInventoryList(inventoryList); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		if err := h.store.CreateInventoryList(inventoryList); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusCreated)
+		json.NewEncoder(w).Encode(inventoryList)
 
 	}
 }
