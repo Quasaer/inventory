@@ -12,5 +12,5 @@ CREATE TABLE inventory_item (
     name TEXT NOT NULL,
     count INT NOT NULL,
     created_at BIGINT NOT NULL,
-    updated_at BIGINT
+    updated_at BIGINT NOT NULL
 );

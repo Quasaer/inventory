@@ -17,8 +17,8 @@ type InventoryList struct {
 	ID          uuid.UUID `db:"id" json:"ID"`
 	Name        string    `db:"name" json:"Name" validate:"required"`
 	Description string    `db:"description" json:"Description"`
-	CreatedAt   int64     `db:"created_at" json:"-"`
-	UpdatedAt   *int64    `db:"updated_at" json:"-"`
+	CreatedAt   int64     `db:"created_at" json:"CreatedAt"`
+	UpdatedAt   int64     `db:"updated_at" json:"UpdatedAt"`
 }
 
 type InventoryListStore interface {
@@ -27,7 +27,8 @@ type InventoryListStore interface {
 	CreateInventoryList(i *InventoryList) error
 	UpdateInventoryList(i *InventoryList) error
 	DeleteInventoryList(InventoryListId uuid.UUID) error
-	ValidateInventoryList(i *InventoryList) error
+	ValidateInventoryListOnCreate(i *InventoryList) error
+	ValidateInventoryListOnUpdate(i *InventoryList) error
 }
 
 type InventoryItemStore interface {

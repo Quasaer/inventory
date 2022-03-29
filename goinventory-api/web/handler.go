@@ -17,9 +17,15 @@ func NewHandler(store goinventory.Store) *Handler {
 	}
 
 	h.Use(middleware.Logger)
+
+	h.Get("/ping", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("ping"))
+	})
+
 	h.Route("/inventoryList", func(r chi.Router) {
 		r.Get("/{id}", h.GetInventoryList())
 		r.Post("/", h.CreateInventoryList())
+		r.Put("/{id}", h.UpdateInventoryList())
 	})
 
 	return h
@@ -63,7 +69,7 @@ func (h *Handler) CreateInventoryList() http.HandlerFunc {
 			return
 		}
 
-		if err := h.store.ValidateInventoryList(inventoryList); err != nil {
+		if err := h.store.ValidateInventoryListOnCreate(inventoryList); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
@@ -78,4 +84,48 @@ func (h *Handler) CreateInventoryList() http.HandlerFunc {
 		json.NewEncoder(w).Encode(inventoryList)
 
 	}
+}
+
+func (h *Handler) UpdateInventoryList() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		idStr := chi.URLParam(r, "id")
+
+		id, err := uuid.Parse(idStr)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		inventoryList := &goinventory.InventoryList{
+			ID: id,
+		}
+		if err := json.NewDecoder(r.Body).Decode(&inventoryList); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		if err := h.store.ValidateInventoryListOnUpdate(inventoryList); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		if err := h.store.UpdateInventoryList(inventoryList); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		var returnInventoryListUpdatedResp = &returnUpdateResponse{
+			UpdatedAt: inventoryList.UpdatedAt,
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(returnInventoryListUpdatedResp)
+
+	}
+}
+
+type returnUpdateResponse struct {
+	UpdatedAt int64
 }
