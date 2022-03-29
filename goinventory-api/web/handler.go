@@ -79,9 +79,14 @@ func (h *Handler) CreateInventoryList() http.HandlerFunc {
 			return
 		}
 
+		var returnInventoryListCreatedResp = &returnCreatedResponse{
+			CreatedAt: inventoryList.CreatedAt,
+			ID:        inventoryList.ID,
+		}
+
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
-		json.NewEncoder(w).Encode(inventoryList)
+		json.NewEncoder(w).Encode(returnInventoryListCreatedResp)
 
 	}
 }
@@ -128,4 +133,9 @@ func (h *Handler) UpdateInventoryList() http.HandlerFunc {
 
 type returnUpdateResponse struct {
 	UpdatedAt int64
+}
+
+type returnCreatedResponse struct {
+	CreatedAt int64
+	ID        uuid.UUID
 }
