@@ -26,6 +26,7 @@ func NewHandler(store goinventory.Store) *Handler {
 		r.Get("/{id}", h.GetInventoryList())
 		r.Post("/", h.CreateInventoryList())
 		r.Put("/{id}", h.UpdateInventoryList())
+		r.Delete("/{id}", h.DeleteInventoryList())
 	})
 
 	return h
@@ -127,6 +128,28 @@ func (h *Handler) UpdateInventoryList() http.HandlerFunc {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(returnInventoryListUpdatedResp)
+
+	}
+}
+
+func (h *Handler) DeleteInventoryList() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		idStr := chi.URLParam(r, "id")
+
+		id, err := uuid.Parse(idStr)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		if err := h.store.DeleteInventoryList(id); err != nil {
+			http.Error(w, err.Error(), http.StatusNotFound)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
 
 	}
 }
