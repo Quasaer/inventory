@@ -1,22 +1,24 @@
 package goinventory
 
-import "github.com/google/uuid"
+import (
+	"github.com/google/uuid"
+)
 
 type InventoryItem struct {
 	ID              uuid.UUID `db:"id"`
 	InventoryListId uuid.UUID `db:"inventory_list_id"`
 	Name            string    `db:"name"`
 	Count           int       `db:"count"`
-	CreatedAt       int       `db:"created_at"`
-	UpdatedAt       int       `db:"updated_at"`
+	CreatedAt       int64     `db:"created_at"`
+	UpdatedAt       int64     `db:"updated_at"`
 }
 
 type InventoryList struct {
-	ID          uuid.UUID `db:"id"`
-	Name        string    `db:"name"`
-	Description string    `db:"description"`
-	CreatedAt   int       `db:"created_at"`
-	UpdatedAt   int       `db:"updated_at"`
+	ID          uuid.UUID `db:"id" json:"ID"`
+	Name        string    `db:"name" json:"Name" validate:"required"`
+	Description string    `db:"description" json:"Description"`
+	CreatedAt   int64     `db:"created_at" json:"CreatedAt"`
+	UpdatedAt   int64     `db:"updated_at" json:"UpdatedAt"`
 }
 
 type InventoryListStore interface {
@@ -25,6 +27,8 @@ type InventoryListStore interface {
 	CreateInventoryList(i *InventoryList) error
 	UpdateInventoryList(i *InventoryList) error
 	DeleteInventoryList(InventoryListId uuid.UUID) error
+	ValidateInventoryListOnCreate(i *InventoryList) error
+	ValidateInventoryListOnUpdate(i *InventoryList) error
 }
 
 type InventoryItemStore interface {
@@ -36,6 +40,6 @@ type InventoryItemStore interface {
 }
 
 type Store interface {
-	InventoryItemStore
+	InventoryListStore
 	InventoryItemStore
 }

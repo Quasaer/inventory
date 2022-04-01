@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Quasaer/goinventory-api/goinventory"
+
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 )
