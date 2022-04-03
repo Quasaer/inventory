@@ -5,6 +5,7 @@ on:
     branches:
     - 'feature/*'
     - 'foundation/*'
+    - 'infrastructure/*'
 
 permissions:
   actions: read
