@@ -5,6 +5,7 @@ on:
     branches:
     - 'feature/*'
     - 'foundation/*'
+    - 'infrastructure/*'
 
 permissions:
   actions: read
@@ -40,11 +41,6 @@ jobs:
         run: curl -sLSf https://cli.openfaas.com | sudo sh
       - name: Pull custom templates from stack.yml
         run: faas-cli template pull stack
-      - name: Get Go-migrate cli
-        run: >
-          curl -s https://packagecloud.io/install/repositories/golang-migrate/migrate/script.deb.sh | sudo bash
-      - name: Install Go-migrate cli
-        run: sudo apt-get install -y migrate
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
@@ -63,9 +59,6 @@ jobs:
           docker login ghcr.io --username 
           ${{ steps.get_repo_owner.outputs.repo_owner }} 
           --password-stdin
-      - name: Run Migrations
-        run: > 
-          migrate -source file://goinventory-api/migrations -database postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable up
       - name: Publish functions
         run: >
           OWNER="${{ steps.get_repo_owner.outputs.repo_owner }}" 

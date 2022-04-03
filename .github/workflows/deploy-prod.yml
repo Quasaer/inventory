@@ -3,7 +3,7 @@ name: deploy
 on:
   push:
     branches:
-      - main
+      - release/staging
 
 permissions:
   actions: read
@@ -22,11 +22,6 @@ jobs:
         run: curl -sLSf https://cli.openfaas.com | sudo sh
       - name: Pull custom templates from stack.yml
         run: faas-cli template pull stack
-      - name: Get Go-migrate cli
-        run: >
-          curl -s https://packagecloud.io/install/repositories/golang-migrate/migrate/script.deb.sh | sudo bash
-      - name: Install Go-migrate cli
-        run: sudo apt-get install -y migrate
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
@@ -45,15 +40,12 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: ghcr.io
-      - name: Run Migrations
-        run: > 
-          migrate -source file://goinventory-api/migrations -database postgres://${{secrets.PROD_POSTGRES_USER}}:${{secrets.PROD_POSTGRES_PASSWORD}}@${{secrets.PROD_POSTGRES_HOST}}:5432/${{secrets.PROD_POSTGRES_DB}}?sslmode=disable up
       - name: Login faasd
         run: >
-          echo ${{secrets.OPENFAAS_PASSWORD}} | 
-          faas-cli login --gateway ${{secrets.OPENFAAS_URL}} --password-stdin
+          echo ${{secrets.STAGING_FAASD_URL}} | 
+          faas-cli login --gateway ${{secrets.STAGING_FAASD_PASSWORD}} --password-stdin
       - name: Deploy
         run: >
           OWNER="${{ steps.get_repo_owner.outputs.repo_owner }}"
           TAG="${{ github.sha }}"
-          faas-cli deploy --gateway ${{secrets.OPENFAAS_URL}}
+          faas-cli deploy --gateway ${{secrets.STAGING_FAASD_URL}}
