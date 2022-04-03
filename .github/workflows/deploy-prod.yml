@@ -42,10 +42,10 @@ jobs:
           registry: ghcr.io
       - name: Login faasd
         run: >
-          echo ${{secrets.STAGING_FAASD_PASSWORD}} |
-          faas-cli login --gateway ${{secrets.STAGING_FAASD_URL}} --password-stdin
+          echo ${{secrets.PROD_FAASD_PASSWORD}} |
+          faas-cli login --gateway ${{secrets.PROD_FAASD_URL}} --password-stdin
       - name: Deploy
         run: >
           OWNER="${{ steps.get_repo_owner.outputs.repo_owner }}"
           TAG="${{ github.sha }}"
-          faas-cli deploy --gateway ${{secrets.STAGING_FAASD_URL}}
+          faas-cli deploy --gateway ${{secrets.PROD_FAASD_URL}}
