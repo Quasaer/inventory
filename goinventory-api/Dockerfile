@@ -33,7 +33,6 @@ RUN apk --no-cache add ca-certificates \
 WORKDIR /home/app
 
 COPY --from=builder --chown=app /go/src/handler/handler    .
-COPY --from=builder --chown=app /go/src/handler/migrations    /home/app/migrations
 COPY --from=builder --chown=app /usr/bin/fwatchdog         .
 
 USER app
