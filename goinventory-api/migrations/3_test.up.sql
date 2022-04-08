@@ -1,3 +1,3 @@
-CREATE TABLE tester (
-    id UUID PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS tester (
+    id UUID PRIMARY KEY
 );

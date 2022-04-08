@@ -16,18 +16,20 @@ ARG GO111MODULE="on"
 COPY --from=watchdog /fwatchdog /usr/bin/fwatchdog
 RUN chmod +x /usr/bin/fwatchdog
 
+ENV CGO_ENABLED=0
+
 RUN mkdir -p /go/src/handler
 WORKDIR /go/src/handler
 COPY . .
+RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} go test ./... -cover
+RUN CGO_ENABLED=${CGO_ENABLED} GOOS=${TARGETOS} GOARCH=${TARGETARCH} \
+    go build --ldflags "-s -w" -a -installsuffix cgo -o handler .
 
-RUN CGO_ENABLED=0 GOOS=linux \
-    go build --ldflags "-s -w" -a -installsuffix cgo -o handler . && \
-    go test $(go list ./... | grep -v /vendor/) -cover
-
-FROM --platform=${TARGETPLATFORM:-linux/amd64} alpine:3.12
+FROM --platform=${TARGETPLATFORM:-linux/amd64} alpine:3.14
 RUN apk --no-cache add ca-certificates \
-    && addgroup -S app && adduser -S -g app app \
-    && mkdir -p /home/app \
+    && addgroup -S app && adduser -S -g app app
+
+RUN mkdir -p /home/app \
     && chown app /home/app
 
 WORKDIR /home/app
