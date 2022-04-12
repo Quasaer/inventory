@@ -9,6 +9,11 @@ functions:
     image: ghcr.io/quasaer/goinventory-api:latest
     secrets:
     - inventory-postgres-connection-string
+  inventory-frontend:
+    lang: dockerfile
+    handler: ./inventory-frontend
+    image: yonglexu/inventory-frontend:latest
 configuration:
   templates:
-    - name: dockerfile
+    - name: dockerfile  
+
